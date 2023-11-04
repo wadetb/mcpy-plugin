@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.net.Socket;
@@ -273,6 +274,17 @@ class RemoteSession {
                     sb.setLength(sb.length() - 1);
                 }
                 send(sb.toString());
+            } else if (c.equals("world.spawnItem")) {
+                 Location loc = parseRelativeBlockLocation(args[0], args[1], args[2]);
+                 Material materialType;
+                 try{
+                     materialType = Material.valueOf(args[3].toUpperCase());
+                 }catch(Exception exc){
+                     materialType = Material.valueOf("ACACIA_BOAT");
+                 }
+		 ItemStack itemStack = new ItemStack(materialType);
+                 Entity entity = world.dropItem(loc, itemStack);
+                 send(entity.getUniqueId());
             } else if (c.equals("world.spawnEntity")) {
                  Location loc = parseRelativeBlockLocation(args[0], args[1], args[2]);
                  EntityType entityType;
